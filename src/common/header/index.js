@@ -1,24 +1,10 @@
 import React, { Component } from 'react'
 import { HeaderWrap, Logo, Container, LeftUl, LeftLi, LeftLiA, SearchForm, SearchInput, SearchBtn, RightA } from './style'
 import { CSSTransition } from 'react-transition-group';
+import { connect } from 'react-redux'
+import { searchFocused, searchBlur } from './store/actionCreator'
 
 class Header extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            focused: false
-        }
-    }
-    searchInputFocused = () => {
-        this.setState({
-            focused: true
-        })
-    }
-    searchInputBlur = () => {
-        this.setState({
-            focused: false
-        })
-    }
     render() {
         return (
             <HeaderWrap>
@@ -40,24 +26,39 @@ class Header extends Component {
                         </LeftLi>
                         <LeftLi>
                             <LeftLiA><i className='iconfont'>&#xe64c;</i>
-                                下载APP</LeftLiA>
+                                下载APP </LeftLiA>
 
                         </LeftLi>
                         <LeftLi>
 
                             <SearchForm>
-                                <CSSTransition in={this.state.focused} timeout={400} classNames="search-box">
-                                    <SearchInput onFocus={this.searchInputFocused} onBlur={this.searchInputBlur} className={this.state.focused ? 'focus' : ''} />
+                                <CSSTransition in={this.props.focused} timeout={400} classNames="search-box">
+                                    <SearchInput onFocus={this.props.searchInputFocused} onBlur={this.props.searchInputBlur} className={this.props.focused ? 'focus' : ''} />
                                 </CSSTransition>
-                                <SearchBtn className={this.state.focused ? 'focus' : ''}><i className='iconfont'>&#xe624;</i></SearchBtn>
+                                <SearchBtn className={this.props.focused ? 'focus' : ''}><i className='iconfont'>&#xe624;</i></SearchBtn>
                             </SearchForm>
+
                         </LeftLi>
                     </LeftUl>
                 </Container>
             </HeaderWrap>
         )
     }
-
 }
 
-export default Header
+const mapStateToProps = state => {
+    return {
+        focused: state.getIn(['header', 'focused'])
+    }
+}
+const mapDispatchToProps = dispatch => {
+    return {
+        searchInputFocused() {
+            dispatch(searchFocused())
+        },
+        searchInputBlur() {
+            dispatch(searchBlur())
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

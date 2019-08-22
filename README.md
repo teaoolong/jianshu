@@ -1,68 +1,131 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 一. 全局设置 css 样式
 
-## Available Scripts
+## 1. /src 下创建 style.js 文件
 
-In the project directory, you can run:
+```js
+import { createGlobalStyle } from 'styled-components'; // createGlobalStyle  'styled-components'
 
-### `npm start`
+export const GlobalStyle = createGlobalStyle`` // 设置全局样式 reset.css 文件等
+```
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 2. /src 下 app.js
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+```js
+import { GlobalStyle } from './style' 
 
-### `npm test`
+function App() {
+  return (
+      <Fragment>
+        <GlobalStyle />    // 可在最前引入全局样式
+        <Header />
+      </Fragment>
+  );
+}
+```
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# 二. header 部分redux设置总结
 
-### `npm run build`
+## 1. /src 下创建store文件夹,包括 index.js 和 reducer.js
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### (1) index.js
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+```js
+import { createStore } from 'redux' // createStore  'redux'
+import reducer from './reducer'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export default createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())  // 传入的第二个参数是为了使用 redux-devtools-extension 工具
+```
 
-### `npm run eject`
+(2) reducer.js
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```js
+import { combineReducers } from 'redux'; // 可以引入多个reducer进行整合,引自 'redux'
+import { reducer as headerReducer } from '../common/header/store'
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+const reducer = combineReducers({
+    header: headerReducer
+})
+export default reducer
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 2. /src 下 app.js
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```js
 
-## Learn More
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 3. /src/common/header  下创建 store 文件夹 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+(1) index.js
 
-### Code Splitting
+```js
+import reducer from './reducer'  // index.js文件作用:暴露store文件夹下的多个参数
+export { reducer }
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+(2) reducer.js
 
-### Analyzing the Bundle Size
+```js
+const defaultState = {
+    focused: false   //初始化 state 值
+}
+export default (state = defaultState, action) => {
+    return state
+}
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+## 4. /src/common/header  下 index.js 文件
 
-### Making a Progressive Web App
+```js
+import { connect } from 'react-redux'  //  connect  'react-redux'
+import { searchFocused, searchBlur } from './store/actionCreator'
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+// 将 store 中的值映射至组件中的 props
+const mapStateToProps = state => {
+    return {
+        //通过 combineReducers 组合 reducer 后 state 下的值多封装了一层
+        focused: state.header.focused  
+    }
+}
+const mapDispatchToProps = dispatch => {
+    return {
+        searchInputFocused() {
+            dispatch(searchFocused())  // 通过 actionCreator 创建 action  直接 dispatch
+        },
+        searchInputBlur() {
+            dispatch(searchBlur())
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
+```
 
-### Advanced Configuration
+## 5.通过 immutable 管理 state 不被修改
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+```js
+// 引用
+import { fromJS } from 'immutable';
+// 定义初始值
+const defaultState = fromJS({
+    focused: false
+})
+// 派发action改变值  immutable 对象的 set 方法,会结合之前 immutable 对象的值和设置的值,返回一个全新的对象
+return state.set('focused', true) 
+```
 
-### Deployment
+## 6.通过 redux-immutable 统一引用时的数据类型
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+```js
+// src/store/reducer.js 引用  将引自 'redux' 的 combineReducers 方法(普通 js 对象 state) 替换为引自 'redux-immutable' 后( state 变为 immutable 对象)
+import { combineReducers } from 'redux-immutable';
+const reducer = combineReducers({
+    header: headerReducer
+})
+// header/index.js 中 state 引用方法相应变化  getIn 方法传入字符串后,会逐层去查找相应对象的属性值
+const mapStateToProps = state => {
+    return {
+        focused: state.getIn(['header', 'focused'])
+    }
+}
+```
 
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
