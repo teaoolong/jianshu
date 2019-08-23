@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { HeaderWrap, Logo, Container, LeftUl, LeftLi, LeftLiA, SearchForm, SearchInput, SearchBtn, RightA } from './style'
+import { HeaderWrap, Logo, Container, LeftUl, LeftLi, LeftLiA, SearchForm, SearchInput, SearchBtn, RightA, SearchInfo, SearchInfoWrap } from './style'
 import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux'
 import { searchFocused, searchBlur } from './store/actionCreator'
@@ -27,17 +27,60 @@ class Header extends Component {
                         <LeftLi>
                             <LeftLiA><i className='iconfont'>&#xe64c;</i>
                                 下载APP </LeftLiA>
-
                         </LeftLi>
                         <LeftLi>
-
                             <SearchForm>
                                 <CSSTransition in={this.props.focused} timeout={400} classNames="search-box">
                                     <SearchInput onFocus={this.props.searchInputFocused} onBlur={this.props.searchInputBlur} className={this.props.focused ? 'focus' : ''} />
                                 </CSSTransition>
                                 <SearchBtn className={this.props.focused ? 'focus' : ''}><i className='iconfont'>&#xe624;</i></SearchBtn>
-                            </SearchForm>
+                                <SearchInfoWrap className={this.props.focused ? 'focus' : ''}>
+                                    <SearchInfo>
+                                        <div className="search_info">
+                                            <span>热门搜索</span>
+                                            <a href="/"><i className='iconfont'>&#xe83e;</i>换一批</a>
+                                        </div>
+                                        <ul className="search_tags">
+                                            <li>
+                                                <a href='/' className='search_tag_item'>
+                                                    教育
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href='/' className='search_tag_item'>
+                                                    教育
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href='/' className='search_tag_item'>
+                                                    教育
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href='/' className='search_tag_item'>
+                                                    教育
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href='/' className='search_tag_item'>
+                                                    教育
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href='/' className='search_tag_item'>
+                                                    教育
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href='/' className='search_tag_item'>
+                                                    教育
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </SearchInfo>
 
+                                </SearchInfoWrap>
+                            </SearchForm>
                         </LeftLi>
                     </LeftUl>
                 </Container>

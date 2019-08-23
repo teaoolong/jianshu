@@ -49,6 +49,68 @@ export const SearchForm = styled.form`
     position: relative;
     padding-left: 15px;
 `
+export const SearchInfoWrap = styled.div`
+    position: relative;
+    top:4px;
+    left:0px;
+    background-color:#fff;
+    z-index:10;
+    // visibility:hidden;
+    &.focus{
+        visibility:visible;
+    }
+    &:before{
+        position: absolute;
+        box-shadow:0 0 8px rgba(0,0,0,.2);
+        content: "";
+        left: 27px;
+        width: 15px;
+        height: 15px;
+        transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        top: -7px;
+        background-color:#fff;
+    }
+`
+export const SearchInfo = styled.div`
+    position: absolute;
+    background-color:#fff;
+    width:260px;
+    box-shadow:0 4px 8px rgba(0,0,0,.2);
+    padding:0 20px 10px;
+    cursor:initial;
+    .search_info{
+        height:50px;
+        span{
+            color:#969696;
+            font-size:14px;
+        }
+        a{
+            height:100%;
+            color:#787878;
+            float:right;
+            font-size:13px;
+            i{
+                font-size:13px;
+            }
+        }
+    }
+    .search_tags{
+        font-size:12px;
+        line-height:35px;
+        li{
+            float:left;
+            margin-right:8px;
+            .search_tag_item{
+                padding:2px 8px;
+                color:#787878;
+                border:1px solid #ccc;
+                border-radius: 5px;
+            }
+        }
+    }
+`
 export const SearchInput = styled.input.attrs({
     placeholder: '搜索', type: 'text'
 })`
@@ -57,7 +119,6 @@ export const SearchInput = styled.input.attrs({
     background:#eee;
     border-radius:19px;
     padding:0 40px 0 20px;
-    // transition:  all .2s ease-out;
     &::placeholder{
         color:#999;
     }

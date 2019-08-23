@@ -59,5 +59,6 @@ body{
 }
 a{
 	cursor: pointer;
+	text-decoration: none;
 }
 `
